@@ -1,7 +1,9 @@
-import { Text, View } from "react-native";
+import { useNavigation } from "expo-router";
+import { Button, Text, View } from "react-native";
 
+export default function TelaDois() {
+  const navigation = useNavigation();
 
-export default function telaDois() {
   return (
     <View
       style={{
@@ -10,7 +12,8 @@ export default function telaDois() {
         alignItems: "center",
       }}
     >
-      <Text>Tela Dois.</Text>
+      <Button title="Navegar Botao" onPress={() => navigation.goBack()} />
+      <Text>Tela Dois</Text>
     </View>
   );
 }
