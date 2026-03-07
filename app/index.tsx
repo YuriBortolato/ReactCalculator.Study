@@ -1,43 +1,68 @@
 import { useRouter } from "expo-router";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Calculadora UMFG</Text>
+      <Text style={styles.title}>Calculadora</Text>
       
-      <View style={styles.buttonContainer}>
-        <Button title="Somar (+)" onPress={() => router.push("/soma")} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Subtrair (-)" onPress={() => router.push("/subtracao")} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Multiplicar (*)" onPress={() => router.push("/multiplicacao")} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Dividir (/)" onPress={() => router.push("/divisao")} />
+      <View style={styles.grid}>
+        <TouchableOpacity style={[styles.card, styles.cardSoma]} onPress={() => router.push("/soma")}>
+          <Text style={styles.cardText}>➕ Somar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.card, styles.cardSub]} onPress={() => router.push("/subtracao")}>
+          <Text style={styles.cardText}>➖ Subtrair</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.card, styles.cardMult]} onPress={() => router.push("/multiplicacao")}>
+          <Text style={styles.cardText}>✖️ Multiplicar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.card, styles.cardDiv]} onPress={() => router.push("/divisao")}>
+          <Text style={styles.cardText}>➗ Dividir</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+  container: { 
+    flex: 1, 
+    backgroundColor: "#f5f5f5", 
+    alignItems: "center", 
+    paddingTop: 80 
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 30,
+  title: { 
+    fontSize: 28, 
+    fontWeight: "bold", 
+    marginBottom: 40, 
+    color: "#333" 
   },
-  buttonContainer: {
-    width: "100%",
-    marginBottom: 15,
-  }
+  grid: { 
+    width: "90%", 
+    flexDirection: "row", 
+    flexWrap: "wrap", 
+    justifyContent: "space-between" 
+  },
+  card: { 
+    width: "48%", 
+    paddingVertical: 30, 
+    borderRadius: 12, 
+    alignItems: "center", 
+    marginBottom: 15, 
+    elevation: 4, 
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.2, 
+    shadowRadius: 4 
+  },
+  cardSoma: { backgroundColor: "#4CAF50" },
+  cardSub: { backgroundColor: "#F44336" },
+  cardMult: { backgroundColor: "#2196F3" },
+  cardDiv: { backgroundColor: "#FF9800" },
+  cardText: { color: "#fff", fontSize: 18, fontWeight: "bold" }
 });
