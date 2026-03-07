@@ -1,5 +1,11 @@
 import { useRef, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+interface RegistroHistorico {
+  id: string;
+  expressao: string;
+  data: string;
+}
 
 export default function Divisao() {
   const [num1, setNum1] = useState("");
@@ -7,6 +13,7 @@ export default function Divisao() {
   const [resultado, setResultado] = useState<number | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [camposVazios, setCamposVazios] = useState<string[]>([]);
+  const [historico, setHistorico] = useState<RegistroHistorico[]>([]);
 
   const input2Ref = useRef<TextInput>(null);
 
@@ -22,7 +29,6 @@ export default function Divisao() {
 
     if (errosAtuais.length > 0) {
       setCamposVazios(errosAtuais);
-      
       if (errosAtuais.length === 2) {
         setErro("Por favor, preencha os dois campos.");
       } else if (errosAtuais.includes("num1")) {
@@ -39,9 +45,19 @@ export default function Divisao() {
     if (!isNaN(n1) && !isNaN(n2)) {
       if (n2 === 0) {
         setErro("Erro: Não é possível dividir por zero.");
-        setCamposVazios(["num2"]); 
+        setCamposVazios(["num2"]);
       } else {
-        setResultado(n1 / n2);
+        const res = n1 / n2;
+        setResultado(res);
+
+        const agora = new Date();
+        const dataFormatada = `${agora.toLocaleDateString("pt-BR")} ${agora.toLocaleTimeString("pt-BR").slice(0, 5)}`;
+        const novoRegistro: RegistroHistorico = {
+          id: Date.now().toString(),
+          expressao: `${n1} / ${n2} = ${res}`,
+          data: dataFormatada
+        };
+        setHistorico((prev) => [novoRegistro, ...prev]);
       }
     } else {
       setErro("Valores inválidos digitados.");
@@ -67,10 +83,7 @@ export default function Divisao() {
           placeholder="Digite o numerador (1º número)" 
           placeholderTextColor="#999" 
           value={num1} 
-          onChangeText={(texto) => {
-            setNum1(texto);
-            limparErroAoDigitar();
-          }} 
+          onChangeText={(texto) => { setNum1(texto); limparErroAoDigitar(); }} 
           returnKeyType="next" 
           onSubmitEditing={() => input2Ref.current?.focus()} 
           blurOnSubmit={false} 
@@ -82,10 +95,7 @@ export default function Divisao() {
           placeholder="Digite o denominador (2º número)" 
           placeholderTextColor="#999" 
           value={num2} 
-          onChangeText={(texto) => {
-            setNum2(texto);
-            limparErroAoDigitar();
-          }}
+          onChangeText={(texto) => { setNum2(texto); limparErroAoDigitar(); }}
           returnKeyType="done" 
         />
       </View>
@@ -105,6 +115,23 @@ export default function Divisao() {
           <Text style={styles.resultText}>Resultado: {resultado}</Text>
         </View>
       )}
+
+      {historico.length > 0 && (
+        <View style={styles.historicoContainer}>
+          <Text style={styles.historicoTitle}>Histórico</Text>
+          <FlatList
+            data={historico}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <View style={styles.historicoBox}>
+                <Text style={styles.historicoData}>{item.data}</Text>
+                <Text style={styles.historicoCalculo}>{item.expressao}</Text>
+              </View>
+            )}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -120,5 +147,10 @@ const styles = StyleSheet.create({
   resultBox: { marginTop: 30, padding: 20, backgroundColor: "#e8f5e9", borderRadius: 8, width: "90%", alignItems: "center", borderWidth: 1, borderColor: "#4CAF50" },
   resultText: { fontSize: 22, fontWeight: "bold", color: "#2e7d32" },
   errorBox: { marginTop: 30, padding: 20, backgroundColor: "#ffebee", borderRadius: 8, width: "90%", alignItems: "center", borderWidth: 1, borderColor: "#ef9a9a" },
-  errorTextInside: { fontSize: 18, fontWeight: "bold", color: "#c62828", textAlign: "center" }
+  errorTextInside: { fontSize: 18, fontWeight: "bold", color: "#c62828", textAlign: "center" },
+  historicoContainer: { width: "90%", flex: 1, marginTop: 30 },
+  historicoTitle: { fontSize: 20, fontWeight: "bold", color: "#666", textAlign: "center", marginBottom: 15 },
+  historicoBox: { backgroundColor: "#e0e0e0", padding: 15, borderRadius: 8, marginBottom: 10 },
+  historicoData: { fontSize: 12, color: "#555", marginBottom: 4 },
+  historicoCalculo: { fontSize: 18, fontWeight: "bold", color: "#333" }
 });
