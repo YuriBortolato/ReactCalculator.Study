@@ -60,14 +60,19 @@ export default function Divisao() {
         const res = n1 / n2;
         setResultado(res);
 
+        const expressaoCalculada = `${formatarNumero(n1)} / ${formatarNumero(n2)} = ${formatarNumero(res)}`;
         const agora = new Date();
         const dataFormatada = `${agora.toLocaleDateString("pt-BR")} ${agora.toLocaleTimeString("pt-BR").slice(0, 5)}`;
-        const novoRegistro: RegistroHistorico = {
-          id: Date.now().toString(),
-          expressao: `${formatarNumero(n1)} / ${formatarNumero(n2)} = ${formatarNumero(res)}`,
-          data: dataFormatada
-        };
-        setHistorico((prev) => [novoRegistro, ...prev]);
+        
+        setHistorico((prev) => {
+          const historicoSemDuplicata = prev.filter(item => item.expressao !== expressaoCalculada);
+          const novoRegistro: RegistroHistorico = {
+            id: Date.now().toString(),
+            expressao: expressaoCalculada,
+            data: dataFormatada
+          };
+          return [novoRegistro, ...historicoSemDuplicata];
+        });
       }
     } else {
       setErro("Valores inválidos digitados.");

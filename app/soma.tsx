@@ -56,15 +56,21 @@ export default function Soma() {
       const res = n1 + n2;
       setResultado(res);
 
+      const expressaoCalculada = `${formatarNumero(n1)} + ${formatarNumero(n2)} = ${formatarNumero(res)}`;
       const agora = new Date();
       const dataFormatada = `${agora.toLocaleDateString("pt-BR")} ${agora.toLocaleTimeString("pt-BR").slice(0, 5)}`;
       
-      const novoRegistro: RegistroHistorico = {
-        id: Date.now().toString(),
-        expressao: `${formatarNumero(n1)} + ${formatarNumero(n2)} = ${formatarNumero(res)}`,
-        data: dataFormatada
-      };
-      setHistorico((prev) => [novoRegistro, ...prev]);
+      setHistorico((prev) => {
+        const historicoSemDuplicata = prev.filter(item => item.expressao !== expressaoCalculada);
+        
+        const novoRegistro: RegistroHistorico = {
+          id: Date.now().toString(),
+          expressao: expressaoCalculada,
+          data: dataFormatada
+        };
+        
+        return [novoRegistro, ...historicoSemDuplicata];
+      });
     } else {
       setErro("Valores inválidos digitados.");
       setCamposVazios(["num1", "num2"]);
@@ -158,13 +164,10 @@ const styles = StyleSheet.create({
   inputError: { borderColor: "#D32F2F", borderWidth: 1.5 },
   button: { width: "90%", maxWidth: 400, backgroundColor: "#0099ff", padding: 15, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-  
   resultBox: { marginTop: 30, minHeight: 80, paddingHorizontal: 20, justifyContent: "center", backgroundColor: "#e8f5e9", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#4CAF50" },
   resultText: { fontSize: 22, fontWeight: "bold", color: "#2e7d32" },
-  
   errorBox: { marginTop: 30, minHeight: 80, paddingHorizontal: 20, justifyContent: "center", backgroundColor: "#ffebee", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#ef9a9a" },
   errorTextInside: { fontSize: 18, fontWeight: "bold", color: "#c62828", textAlign: "center" },
-  
   historicoHeader: { width: "90%", maxWidth: 400, marginTop: 30, alignSelf: "center" },
   historicoTitle: { fontSize: 20, fontWeight: "bold", color: "#666", textAlign: "center", marginBottom: 15 },
   historicoBox: { width: "90%", maxWidth: 400, alignSelf: "center", backgroundColor: "#e0e0e0", padding: 15, borderRadius: 8, marginBottom: 10 },
