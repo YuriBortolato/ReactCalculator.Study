@@ -13,7 +13,6 @@ export default function Soma() {
   const [resultado, setResultado] = useState<number | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [camposVazios, setCamposVazios] = useState<string[]>([]);
-  
   const [historico, setHistorico] = useState<RegistroHistorico[]>([]);
 
   const input2Ref = useRef<TextInput>(null);
@@ -30,7 +29,6 @@ export default function Soma() {
 
     if (errosAtuais.length > 0) {
       setCamposVazios(errosAtuais);
-      
       if (errosAtuais.length === 2) {
         setErro("Por favor, preencha os dois campos.");
       } else if (errosAtuais.includes("num1")) {
@@ -50,15 +48,12 @@ export default function Soma() {
 
       const agora = new Date();
       const dataFormatada = `${agora.toLocaleDateString("pt-BR")} ${agora.toLocaleTimeString("pt-BR").slice(0, 5)}`;
-      
       const novoRegistro: RegistroHistorico = {
-        id: Date.now().toString(), 
+        id: Date.now().toString(),
         expressao: `${n1} + ${n2} = ${res}`,
         data: dataFormatada
       };
-
       setHistorico((prev) => [novoRegistro, ...prev]);
-
     } else {
       setErro("Valores inválidos digitados.");
       setCamposVazios(["num1", "num2"]);
@@ -139,20 +134,18 @@ export default function Soma() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f5f5f5", alignItems: "center", paddingTop: 60 },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 30, color: "#333", textAlign: "center" },
-  inputContainer: { width: "90%", marginBottom: 20 },
+  inputContainer: { width: "90%", maxWidth: 400, marginBottom: 20 }, 
   input: { backgroundColor: "#fff", borderWidth: 1, borderColor: "#ddd", padding: 15, marginBottom: 15, borderRadius: 8, fontSize: 16, color: "#333" },
   inputError: { borderColor: "#D32F2F", borderWidth: 1.5 },
-  button: { width: "90%", backgroundColor: "#0099ff", padding: 15, borderRadius: 8, alignItems: "center" },
+  button: { width: "90%", maxWidth: 400, backgroundColor: "#0099ff", padding: 15, borderRadius: 8, alignItems: "center" }, 
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-  resultBox: { marginTop: 30, padding: 20, backgroundColor: "#e8f5e9", borderRadius: 8, width: "90%", alignItems: "center", borderWidth: 1, borderColor: "#4CAF50" },
+  resultBox: { marginTop: 30, padding: 20, backgroundColor: "#e8f5e9", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#4CAF50" },
   resultText: { fontSize: 22, fontWeight: "bold", color: "#2e7d32" },
-  errorBox: { marginTop: 30, padding: 20, backgroundColor: "#ffebee", borderRadius: 8, width: "90%", alignItems: "center", borderWidth: 1, borderColor: "#ef9a9a" },
+  errorBox: { marginTop: 30, padding: 20, backgroundColor: "#ffebee", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#ef9a9a" }, 
   errorTextInside: { fontSize: 18, fontWeight: "bold", color: "#c62828", textAlign: "center" },
-  
-  
-  historicoContainer: { width: "90%", flex: 1, marginTop: 30 },
+  historicoContainer: { width: "90%", maxWidth: 400, flex: 1, marginTop: 30 }, 
   historicoTitle: { fontSize: 20, fontWeight: "bold", color: "#666", textAlign: "center", marginBottom: 15 },
-  historicoBox: { backgroundColor: "#e0e0e0", padding: 15, borderRadius: 8, marginBottom: 10 }, 
+  historicoBox: { backgroundColor: "#e0e0e0", padding: 15, borderRadius: 8, marginBottom: 10 },
   historicoData: { fontSize: 12, color: "#555", marginBottom: 4 },
   historicoCalculo: { fontSize: 18, fontWeight: "bold", color: "#333" }
 });

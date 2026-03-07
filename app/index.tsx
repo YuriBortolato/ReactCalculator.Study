@@ -34,49 +34,20 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#f5f5f5", 
-    alignItems: "center", 
-    paddingTop: 60 
-  },
-  title: { 
-    fontSize: 28, 
-    fontWeight: "bold", 
-    marginBottom: 40, 
-    color: "#333",
-    textAlign: "center" 
-  },
+  container: { flex: 1, backgroundColor: "#f5f5f5", alignItems: "center", paddingTop: 60 },
+  title: { fontSize: 28, fontWeight: "bold", marginBottom: 40, color: "#333", textAlign: "center" },
   grid: { 
     width: "90%", 
+    maxWidth: 400, 
     flexDirection: "row", 
     flexWrap: "wrap", 
     justifyContent: "space-between" 
   },
-  card: { 
-    width: "48%", 
-    aspectRatio: 1, 
-    justifyContent: "center", 
-    alignItems: "center", 
-    borderRadius: 12, 
-    marginBottom: 15, 
-    elevation: 4, 
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.2, 
-    shadowRadius: 4 
-  },
+  card: { width: "48%", aspectRatio: 1, justifyContent: "center", alignItems: "center", borderRadius: 12, marginBottom: 15, elevation: 4, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4 },
   cardSoma: { backgroundColor: "#4CAF50" },
   cardSub: { backgroundColor: "#F44336" },
   cardMult: { backgroundColor: "#2196F3" },
   cardDiv: { backgroundColor: "#FF9800" },
-  cardText: { 
-    color: "#fff", 
-    fontSize: 20, 
-    fontWeight: "bold",
-    marginBottom: 10 
-  },
-  cardSymbol: {
-    fontSize: 36 
-  }
+  cardText: { color: "#fff", fontSize: 20, fontWeight: "bold", marginBottom: 10 },
+  cardSymbol: { fontSize: 36 }
 });
