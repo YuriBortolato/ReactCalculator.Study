@@ -10,19 +10,23 @@ export default function Index() {
       
       <View style={styles.grid}>
         <TouchableOpacity style={[styles.card, styles.cardSoma]} onPress={() => router.push("/soma")}>
-          <Text style={styles.cardText}>➕ Somar</Text>
+          <Text style={styles.cardText}>Somar</Text>
+          <Text style={styles.cardSymbol}>➕</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.card, styles.cardSub]} onPress={() => router.push("/subtracao")}>
-          <Text style={styles.cardText}>➖ Subtrair</Text>
+          <Text style={styles.cardText}>Subtrair</Text>
+          <Text style={styles.cardSymbol}>➖</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.card, styles.cardMult]} onPress={() => router.push("/multiplicacao")}>
-          <Text style={styles.cardText}>✖️ Multiplicar</Text>
+          <Text style={styles.cardText}>Multiplicar</Text>
+          <Text style={styles.cardSymbol}>✖️</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.card, styles.cardDiv]} onPress={() => router.push("/divisao")}>
-          <Text style={styles.cardText}>➗ Dividir</Text>
+          <Text style={styles.cardText}>Dividir</Text>
+          <Text style={styles.cardSymbol}>➗</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -34,13 +38,14 @@ const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: "#f5f5f5", 
     alignItems: "center", 
-    paddingTop: 80 
+    paddingTop: 60 
   },
   title: { 
     fontSize: 28, 
     fontWeight: "bold", 
     marginBottom: 40, 
-    color: "#333" 
+    color: "#333",
+    textAlign: "center" 
   },
   grid: { 
     width: "90%", 
@@ -50,9 +55,10 @@ const styles = StyleSheet.create({
   },
   card: { 
     width: "48%", 
-    paddingVertical: 30, 
-    borderRadius: 12, 
+    aspectRatio: 1, 
+    justifyContent: "center", 
     alignItems: "center", 
+    borderRadius: 12, 
     marginBottom: 15, 
     elevation: 4, 
     shadowColor: "#000", 
@@ -64,5 +70,13 @@ const styles = StyleSheet.create({
   cardSub: { backgroundColor: "#F44336" },
   cardMult: { backgroundColor: "#2196F3" },
   cardDiv: { backgroundColor: "#FF9800" },
-  cardText: { color: "#fff", fontSize: 18, fontWeight: "bold" }
+  cardText: { 
+    color: "#fff", 
+    fontSize: 20, 
+    fontWeight: "bold",
+    marginBottom: 10 
+  },
+  cardSymbol: {
+    fontSize: 36 
+  }
 });
