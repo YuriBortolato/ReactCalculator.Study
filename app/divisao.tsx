@@ -1,23 +1,58 @@
-import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useRef, useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Divisao() {
   const [num1, setNum1] = useState("");
   const [num2, setNum2] = useState("");
-  const [resultado, setResultado] = useState<number | string | null>(null);
+  const [resultado, setResultado] = useState<number | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [camposVazios, setCamposVazios] = useState<string[]>([]);
+
+  const input2Ref = useRef<TextInput>(null);
 
   const calcular = () => {
+    setErro(null);
+    setResultado(null);
+    setCamposVazios([]);
+
+    let errosAtuais: string[] = [];
+
+    if (!num1) errosAtuais.push("num1");
+    if (!num2) errosAtuais.push("num2");
+
+    if (errosAtuais.length > 0) {
+      setCamposVazios(errosAtuais);
+      
+      if (errosAtuais.length === 2) {
+        setErro("Por favor, preencha os dois campos.");
+      } else if (errosAtuais.includes("num1")) {
+        setErro("Por favor, preencha o numerador.");
+      } else {
+        setErro("Por favor, preencha o denominador.");
+      }
+      return;
+    }
+
     const n1 = parseFloat(num1);
     const n2 = parseFloat(num2);
     
     if (!isNaN(n1) && !isNaN(n2)) {
       if (n2 === 0) {
-        setResultado("Erro: Divisão por zero!");
+        setErro("Erro: Não é possível dividir por zero.");
+        setCamposVazios(["num2"]); 
       } else {
-        setResultado(n1 / n2); 
+        setResultado(n1 / n2);
       }
     } else {
-      setResultado(null);
+      setErro("Valores inválidos digitados.");
+      setCamposVazios(["num1", "num2"]);
+    }
+  };
+
+  const limparErroAoDigitar = () => {
+    if (erro) {
+      setErro(null);
+      setCamposVazios([]);
     }
   };
 
@@ -25,37 +60,65 @@ export default function Divisao() {
     <View style={styles.container}>
       <Text style={styles.title}>Operação de Divisão</Text>
       
-      <TextInput 
-        style={styles.input} 
-        keyboardType="numeric" 
-        placeholder="Digite o numerador (1º número)" 
-        value={num1} 
-        onChangeText={setNum1} 
-      />
+      <View style={styles.inputContainer}>
+        <TextInput 
+          style={[styles.input, camposVazios.includes("num1") && styles.inputError]} 
+          keyboardType="numeric" 
+          placeholder="Digite o numerador (1º número)" 
+          placeholderTextColor="#999" 
+          value={num1} 
+          onChangeText={(texto) => {
+            setNum1(texto);
+            limparErroAoDigitar();
+          }} 
+          returnKeyType="next" 
+          onSubmitEditing={() => input2Ref.current?.focus()} 
+          blurOnSubmit={false} 
+        />
+        <TextInput 
+          ref={input2Ref} 
+          style={[styles.input, camposVazios.includes("num2") && styles.inputError]} 
+          keyboardType="numeric" 
+          placeholder="Digite o denominador (2º número)" 
+          placeholderTextColor="#999" 
+          value={num2} 
+          onChangeText={(texto) => {
+            setNum2(texto);
+            limparErroAoDigitar();
+          }}
+          returnKeyType="done" 
+        />
+      </View>
+
+      <TouchableOpacity style={styles.button} onPress={calcular}>
+        <Text style={styles.buttonText}>Calcular</Text>
+      </TouchableOpacity>
       
-      <TextInput 
-        style={styles.input} 
-        keyboardType="numeric" 
-        placeholder="Digite o denominador (2º número)" 
-        value={num2} 
-        onChangeText={setNum2} 
-      />
-      
-      <Button title="Calcular" onPress={calcular} />
-      
-      {resultado !== null && (
-        <Text style={[styles.result, typeof resultado === 'string' ? styles.error : null]}>
-          {typeof resultado === 'string' ? resultado : `Resultado: ${resultado}`}
-        </Text>
+      {erro && (
+        <View style={styles.errorBox}>
+          <Text style={styles.errorTextInside}>{erro}</Text>
+        </View>
+      )}
+
+      {resultado !== null && !erro && (
+        <View style={styles.resultBox}>
+          <Text style={styles.resultText}>Resultado: {resultado}</Text>
+        </View>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
-  title: { fontSize: 22, marginBottom: 20 },
-  input: { width: "100%", borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 15, borderRadius: 5 },
-  result: { fontSize: 20, fontWeight: "bold", marginTop: 20, color: "green" },
-  error: { color: "red", fontSize: 16 }
+  container: { flex: 1, backgroundColor: "#f5f5f5", alignItems: "center", paddingTop: 60 },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 30, color: "#333", textAlign: "center" },
+  inputContainer: { width: "90%", marginBottom: 20 },
+  input: { backgroundColor: "#fff", borderWidth: 1, borderColor: "#ddd", padding: 15, marginBottom: 15, borderRadius: 8, fontSize: 16, color: "#333" },
+  inputError: { borderColor: "#D32F2F", borderWidth: 1.5 },
+  button: { width: "90%", backgroundColor: "#0099ff", padding: 15, borderRadius: 8, alignItems: "center" },
+  buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
+  resultBox: { marginTop: 30, padding: 20, backgroundColor: "#e8f5e9", borderRadius: 8, width: "90%", alignItems: "center", borderWidth: 1, borderColor: "#4CAF50" },
+  resultText: { fontSize: 22, fontWeight: "bold", color: "#2e7d32" },
+  errorBox: { marginTop: 30, padding: 20, backgroundColor: "#ffebee", borderRadius: 8, width: "90%", alignItems: "center", borderWidth: 1, borderColor: "#ef9a9a" },
+  errorTextInside: { fontSize: 18, fontWeight: "bold", color: "#c62828", textAlign: "center" }
 });
