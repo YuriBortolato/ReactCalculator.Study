@@ -7,6 +7,16 @@ interface RegistroHistorico {
   data: string;
 }
 
+const formatarNumero = (num: number): string => {
+  const numStr = num.toString();
+
+  if (numStr.length > 8) {
+    return num.toExponential(4); 
+  }
+
+  return numStr; 
+};
+
 export default function Subtracao() {
   const [num1, setNum1] = useState("");
   const [num2, setNum2] = useState("");
@@ -50,7 +60,7 @@ export default function Subtracao() {
       const dataFormatada = `${agora.toLocaleDateString("pt-BR")} ${agora.toLocaleTimeString("pt-BR").slice(0, 5)}`;
       const novoRegistro: RegistroHistorico = {
         id: Date.now().toString(),
-        expressao: `${n1} - ${n2} = ${res}`,
+        expressao: `${formatarNumero(n1)} - ${formatarNumero(n2)} = ${formatarNumero(res)}`,
         data: dataFormatada
       };
       setHistorico((prev) => [novoRegistro, ...prev]);
@@ -60,11 +70,10 @@ export default function Subtracao() {
     }
   };
 
-  const limparErroAoDigitar = () => {
-    if (erro) {
-      setErro(null);
-      setCamposVazios([]);
-    }
+  const limparAvisosAoDigitar = () => {
+    setErro(null);
+    setCamposVazios([]);
+    setResultado(null); 
   };
 
   return (
@@ -73,6 +82,7 @@ export default function Subtracao() {
         style={{ width: "100%" }}
         contentContainerStyle={{ paddingVertical: 40 }}
         data={historico}
+        extraData={{ num1, num2, resultado, erro, camposVazios }} 
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
@@ -86,7 +96,7 @@ export default function Subtracao() {
                 placeholder="Digite o 1º número" 
                 placeholderTextColor="#999" 
                 value={num1} 
-                onChangeText={(texto) => { setNum1(texto); limparErroAoDigitar(); }} 
+                onChangeText={(texto) => { setNum1(texto); limparAvisosAoDigitar(); }} 
                 returnKeyType="next" 
                 onSubmitEditing={() => input2Ref.current?.focus()} 
                 blurOnSubmit={false} 
@@ -98,7 +108,7 @@ export default function Subtracao() {
                 placeholder="Digite o 2º número" 
                 placeholderTextColor="#999" 
                 value={num2} 
-                onChangeText={(texto) => { setNum2(texto); limparErroAoDigitar(); }}
+                onChangeText={(texto) => { setNum2(texto); limparAvisosAoDigitar(); }}
                 returnKeyType="done" 
               />
             </View>
@@ -107,15 +117,17 @@ export default function Subtracao() {
               <Text style={styles.buttonText}>Calcular</Text>
             </TouchableOpacity>
             
-            {erro && (
+            {erro ? (
               <View style={styles.errorBox}>
                 <Text style={styles.errorTextInside}>{erro}</Text>
               </View>
-            )}
-
-            {resultado !== null && !erro && (
+            ) : resultado !== null ? (
               <View style={styles.resultBox}>
-                <Text style={styles.resultText}>Resultado: {resultado}</Text>
+                <Text style={styles.resultText}>Resultado: {formatarNumero(resultado)}</Text>
+              </View>
+            ) : (
+              <View style={[styles.resultBox, { opacity: 0 }]}>
+                <Text style={styles.resultText}>Espaço Fantasma</Text>
               </View>
             )}
 
@@ -145,9 +157,9 @@ const styles = StyleSheet.create({
   inputError: { borderColor: "#D32F2F", borderWidth: 1.5 },
   button: { width: "90%", maxWidth: 400, backgroundColor: "#0099ff", padding: 15, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-  resultBox: { marginTop: 30, padding: 20, backgroundColor: "#e8f5e9", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#4CAF50" },
+  resultBox: { marginTop: 30, minHeight: 80, paddingHorizontal: 20, justifyContent: "center", backgroundColor: "#e8f5e9", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#4CAF50" },
   resultText: { fontSize: 22, fontWeight: "bold", color: "#2e7d32" },
-  errorBox: { marginTop: 30, padding: 20, backgroundColor: "#ffebee", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#ef9a9a" },
+  errorBox: { marginTop: 30, minHeight: 80, paddingHorizontal: 20, justifyContent: "center", backgroundColor: "#ffebee", borderRadius: 8, width: "90%", maxWidth: 400, alignItems: "center", borderWidth: 1, borderColor: "#ef9a9a" },
   errorTextInside: { fontSize: 18, fontWeight: "bold", color: "#c62828", textAlign: "center" },
   historicoHeader: { width: "90%", maxWidth: 400, marginTop: 30, alignSelf: "center" },
   historicoTitle: { fontSize: 20, fontWeight: "bold", color: "#666", textAlign: "center", marginBottom: 15 },
